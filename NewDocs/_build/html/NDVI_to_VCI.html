@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>NDVI to VCI Module &mdash; AstroCast RCMRD Pipeline 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="VCI to VCI3M Module" href="VCI_To_VCI3M.html" />
+    <link rel="prev" title="NDVI Normalisation Module" href="NDVI_Normalisation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> AstroCast RCMRD Pipeline
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">AstroCast Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Aggregate.html">Aggregation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CreatePDF.html">Reports Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Forecast.html">Forecast Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GaussianProcesses.html">Gaussian Processes Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_Normalisation.html">NDVI Normalisation Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NDVI to VCI Module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="VCI_To_VCI3M.html">VCI to VCI3M Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AstroCast RCMRD Pipeline</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">AstroCast Modules</a> &raquo;</li>
+        
+      <li>NDVI to VCI Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/NDVI_to_VCI.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ndvi-to-vci-module">
+<h1>NDVI to VCI Module<a class="headerlink" href="#ndvi-to-vci-module" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-AstroCast.NDVI_to_VCI"></span><p>Class containing functions that convert NDVI tif images to VCI</p>
+<p>This module takes an input of a file path and an unformatted date.
+A class is then used to house several functions that break the code
+down into small, simple chunks. First, the raw data is read, followed
+by the data for the mins and maxes of each pixel. The VCI is then
+calculated using said data and then saved into it’s own tif file.</p>
+<p>Created on Thu Mar 12 12:05:50 2020
+&#64;author: Andrew Bowell</p>
+<dl class="class">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI">
+<em class="property">class </em><code class="sig-prename descclassname">AstroCast.NDVI_to_VCI.</code><code class="sig-name descname">convert_NDVI_to_VCI</code><span class="sig-paren">(</span><em class="sig-param">file_paths</em>, <em class="sig-param">unformatted_dates</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is used to convert the NDVI tif to a VCI tif.</p>
+<p>A file path and an unformatted date, which can be extracted from the
+file path should be passed into this function when it is initialized.
+This class was built to use dekadal NDVI data from RCMRD.</p>
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.file_paths">
+<code class="sig-name descname">file_paths</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.file_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of filepaths for NDVI raw files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.dates">
+<code class="sig-name descname">dates</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of dates in the format of %Y%m%d e.g 20200101</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.NDVI">
+<code class="sig-name descname">NDVI</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.NDVI" title="Permalink to this definition">¶</a></dt>
+<dd><p>2-D NumPy masked array containing float32 values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">masked</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float32</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.meta_data">
+<code class="sig-name descname">meta_data</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.meta_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains different data about the tif file including projection,dtype,
+fill value and more.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dictionary</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.maxes">
+<code class="sig-name descname">maxes</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.maxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains max values for each  pixel at each timestep.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.mins">
+<code class="sig-name descname">mins</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.mins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains min values for each pixel at each timestep.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span>&#160; <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.VCI">
+<code class="sig-name descname">VCI</code><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.VCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the VCI for each pixel in the type float32 so that it can be
+stored along with the standard metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of :obj: <cite>float32</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Defining some attributes.</p>
+<p>The sole purpose of __init__ is to initialize values that will be
+needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_paths</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for NDVI raw files</p></li>
+<li><p><strong>unformatted_dates</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of dates in the format of %Y%m%d e.g 20200101</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">file_paths</em>, <em class="sig-param">unformatted_dates</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defining some attributes.</p>
+<p>The sole purpose of __init__ is to initialize values that will be
+needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_paths</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for NDVI raw files</p></li>
+<li><p><strong>unformatted_dates</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of dates in the format of %Y%m%d e.g 20200101</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.calc_vci">
+<code class="sig-name descname">calc_vci</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.calc_vci" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the VCI for each pixel.</p>
+<p>The VCI is calculated from the NDVI and the mins/maxes for each pixel.</p>
+<p>Nothing is returned form this function. The VCI attribute is updated
+and the save_data fnuction is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.read_and_store_data">
+<code class="sig-name descname">read_and_store_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.read_and_store_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open tif file extract data and meta data.</p>
+<p>Use a module called rasterio to open the raster in the tif file at the
+target file path. Numpy is then used to get rid of any NDVI values
+that are/around 0 so that cloud cover is eliminated. A copy of the
+meta data is also saved.</p>
+<p>This function does not return anything, but does update the meta_data
+attribute,NDVI attribute, the date attribute and then calls the
+read_min_max function so that the NDVI that has just been read can be
+converted into VCI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.read_min_max">
+<code class="sig-name descname">read_min_max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.read_min_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load in min and max values for each pixel.</p>
+<p>Using NumPy load in dumped masked arrays that contain the minimum
+and maximum for each pixel. allow_pickle must be true and the type
+must be kept as float32 as when saved with the original metadata that
+is the type specified.</p>
+<p>This function does no return anything but instead updates the mins and
+maxes attributes and then calls the functions that calculates the VCI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.save_data">
+<code class="sig-name descname">save_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_to_VCI.convert_NDVI_to_VCI.save_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the resultant VCI data to a tiff</p>
+<p>Reshape the VCI so it has one extra dimention, this is to specifiy the
+raster. Then using rasterio, save the data with the meta data from the
+original file</p>
+<p>Nothing is  returned from this function and only the VCI attribute is
+changed slightly so that it can be saved to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="VCI_To_VCI3M.html" class="btn btn-neutral float-right" title="VCI to VCI3M Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="NDVI_Normalisation.html" class="btn btn-neutral float-left" title="NDVI Normalisation Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrew Bowell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>NDVI Normalisation Module &mdash; AstroCast RCMRD Pipeline 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="NDVI to VCI Module" href="NDVI_to_VCI.html" />
+    <link rel="prev" title="Gaussian Processes Module" href="GaussianProcesses.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> AstroCast RCMRD Pipeline
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">AstroCast Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Aggregate.html">Aggregation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CreatePDF.html">Reports Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Forecast.html">Forecast Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GaussianProcesses.html">Gaussian Processes Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NDVI Normalisation Module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_to_VCI.html">NDVI to VCI Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VCI_To_VCI3M.html">VCI to VCI3M Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AstroCast RCMRD Pipeline</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">AstroCast Modules</a> &raquo;</li>
+        
+      <li>NDVI Normalisation Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/NDVI_Normalisation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ndvi-normalisation-module">
+<h1>NDVI Normalisation Module<a class="headerlink" href="#ndvi-normalisation-module" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-AstroCast.NDVI_Normalisation"></span><p>Class containing functions that find the min and max for each pixel.</p>
+<p>This class takes the input of a list of file paths for NDVI tif images.
+It will then take these images, and for each time step (each of the 36 dekadals)
+the minimum and the maximum will be found for each pixel accross all years.
+This data will then be dumped to a file so that it can be read later.</p>
+<p>Created on Thu Mar 12 10:08:43 2020 &#64;author: Andrew Bowell</p>
+<dl class="class">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation">
+<em class="property">class </em><code class="sig-prename descclassname">AstroCast.NDVI_Normalisation.</code><code class="sig-name descname">NDVI_normalisation</code><span class="sig-paren">(</span><em class="sig-param">NDVI_file_list</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that finds the min/max of each pixel at each timestep.</p>
+<dl class="attribute">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.files">
+<code class="sig-name descname">files</code><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of file paths to NDVI tif data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.timesteps">
+<code class="sig-name descname">timesteps</code><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.timesteps" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of different timesteps (e.g each dekadal) format of %m%d e.g 0101</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.NDVI">
+<code class="sig-name descname">NDVI</code><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.NDVI" title="Permalink to this definition">¶</a></dt>
+<dd><p>NDVI data read in from tif file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">2-D</span> <span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.maxes">
+<code class="sig-name descname">maxes</code><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.maxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max value for each pixel computed for each timestep using the numpy
+fmax function. NaNs are ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">2-D</span> <span class="pre">NumPy</span> <span class="pre">Array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.mins">
+<code class="sig-name descname">mins</code><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.mins" title="Permalink to this definition">¶</a></dt>
+<dd><p>min value for each pixel computed for each timestep using the numpy
+fmin function. NaNs are ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">2-D</span> <span class="pre">Numpy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.timestep">
+<code class="sig-name descname">timestep</code><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singular timestep in format of %m%d e.g 0101</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Initiate the attributes.</p>
+<p>Some small computations in here to make sure data is in the format
+needed</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Numpy arrays created as type object so strings can be stored</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>NDVI_file_list</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">string</span></code>) – List of filepaths for the NDVI tif files.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">NDVI_file_list</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the attributes.</p>
+<p>Some small computations in here to make sure data is in the format
+needed</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Numpy arrays created as type object so strings can be stored</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>NDVI_file_list</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">string</span></code>) – List of filepaths for the NDVI tif files.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.change_file_size">
+<code class="sig-name descname">change_file_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.change_file_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Small function that inserts Nans into the data.</p>
+<p>Hopefully this will be removed in future releases. from 2001-2018 the
+file size stays consitent, but in 2019 the size of the files drop by
+13 rows and 10 columns. This function just inserts NaNs round the edges
+of the NDVI file to make it the same size. The numpy.insert function
+is used to perform this operation.</p>
+<p>This function does not return anything, but does update the NDVI
+attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.normalise">
+<code class="sig-name descname">normalise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.normalise" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function calculates the min and maxes for each pixel.</p>
+<p>The function iterates through each timestep (dekadal) and compares it
+with the name of the file. If the name of the file matches that of the
+time step it is included in the min and max calcualtion. This is
+repeated for each timestep. The function relies on rasterio to open
+the raw NDVI file and read it, then the NumPy fmax/fmin function is
+used to find the min and maxes.</p>
+<p>This function does not return anything but does call the save_file
+function to save the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.NDVI_Normalisation.NDVI_normalisation.save_file">
+<code class="sig-name descname">save_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.NDVI_Normalisation.NDVI_normalisation.save_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Small function that saves the min/max arrays to a file.</p>
+<p>Not much to mention here, the files are saved with the name being the
+timestep (E.g. The dekadal, 0101 or 1221 for example). This is so that
+the data can then be retreived  at a later date and used to create VCI
+from the NDVI.</p>
+<p>This function does not return anything, but does update the mins and
+maxes attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="NDVI_to_VCI.html" class="btn btn-neutral float-right" title="NDVI to VCI Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="GaussianProcesses.html" class="btn btn-neutral float-left" title="Gaussian Processes Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrew Bowell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

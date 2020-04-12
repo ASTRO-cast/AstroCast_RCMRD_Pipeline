@@ -1,0 +1,602 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Aggregation Module &mdash; AstroCast RCMRD Pipeline 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reports Module" href="CreatePDF.html" />
+    <link rel="prev" title="AstroCast Modules" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> AstroCast RCMRD Pipeline
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">AstroCast Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Aggregation Module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CreatePDF.html">Reports Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Forecast.html">Forecast Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GaussianProcesses.html">Gaussian Processes Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_Normalisation.html">NDVI Normalisation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_to_VCI.html">NDVI to VCI Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VCI_To_VCI3M.html">VCI to VCI3M Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AstroCast RCMRD Pipeline</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">AstroCast Modules</a> &raquo;</li>
+        
+      <li>Aggregation Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Aggregate.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aggregation-module">
+<h1>Aggregation Module<a class="headerlink" href="#aggregation-module" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-AstroCast.Aggregate"></span><p>Module used for create timeseries of NDVI,VCI and VCI3M</p>
+<p>This module is designed to take in a shapefile and create individual timeseries
+for each shape in the file. An example use would be using the counties of Kenya
+but it would be equally valid to just have a shapefile of the country and
+create a time series for the whole country. This module also handels any
+cloud coverage too.</p>
+<p>Created on Mon Apr  6 13:46:02 2020</p>
+<p>&#64;author: Andrew Bowell</p>
+<dl class="class">
+<dt id="AstroCast.Aggregate.aggregate_time_series">
+<em class="property">class </em><code class="sig-prename descclassname">AstroCast.Aggregate.</code><code class="sig-name descname">aggregate_time_series</code><span class="sig-paren">(</span><em class="sig-param">NDVI_files</em>, <em class="sig-param">VCI_files</em>, <em class="sig-param">VCI3M_files</em>, <em class="sig-param">shape_file_path</em>, <em class="sig-param">new</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that houses the functions to aggregate and create timeseries</p>
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.NDVI_files">
+<code class="sig-name descname">NDVI_files</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.NDVI_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of filepaths for the NDVI tif files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.VCI_files">
+<code class="sig-name descname">VCI_files</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.VCI_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of filepaths for the VCI tif files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.VCI3M_files">
+<code class="sig-name descname">VCI3M_files</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.VCI3M_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of filepaths for the VCI3M tif files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.shapefile_path">
+<code class="sig-name descname">shapefile_path</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.shapefile_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filepath to the shapefile that is to be used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.new">
+<code class="sig-name descname">new</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not a new time series is to be created</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.shapefile_data">
+<code class="sig-name descname">shapefile_data</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.shapefile_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shapefile data is read in and converted to the same scale as the tif
+images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geopandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.datasets">
+<code class="sig-name descname">datasets</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of the names of each shape. This is so that when the data is saved
+to the database, each dataset is created with its name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.final_array">
+<code class="sig-name descname">final_array</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.final_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>This array contains, for each shape, the date and the mean NDVI,VCI
+and VCI3M over the specified areal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.raw_NDVI">
+<code class="sig-name descname">raw_NDVI</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.raw_NDVI" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the raw NDVI read in from the file by rasterio</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.raw_VCI">
+<code class="sig-name descname">raw_VCI</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.raw_VCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the raw VCI read in from the file by rasterio</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.raw_VCI3M">
+<code class="sig-name descname">raw_VCI3M</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.raw_VCI3M" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the raw VCI3M read in from the file by rasterio</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.NDVI">
+<code class="sig-name descname">NDVI</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.NDVI" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the cropped NDVI</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.VCI">
+<code class="sig-name descname">VCI</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.VCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the cropped VCI</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.VCI3M">
+<code class="sig-name descname">VCI3M</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.VCI3M" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the cropped VCI3M</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.final_NDVI">
+<code class="sig-name descname">final_NDVI</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.final_NDVI" title="Permalink to this definition">¶</a></dt>
+<dd><p>The final NumPy masked array of the cropped NDVI after cloud coverage
+etc has been taken out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.final_VCI">
+<code class="sig-name descname">final_VCI</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.final_VCI" title="Permalink to this definition">¶</a></dt>
+<dd><p>The final NumPy masked array of the cropped VCI after cloud coverage
+etc has been taken out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.final_VCI3M">
+<code class="sig-name descname">final_VCI3M</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.final_VCI3M" title="Permalink to this definition">¶</a></dt>
+<dd><p>The final NumPy masked array of the cropped VCI3M after cloud coverage
+etc has been taken out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.date">
+<code class="sig-name descname">date</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unformatted date %Y%m%d E.g 20090921</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.date_counter">
+<code class="sig-name descname">date_counter</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.date_counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple loop counter. Helps with storage of data in arrays</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Aggregate.aggregate_time_series.shape_counter">
+<code class="sig-name descname">shape_counter</code><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.shape_counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple loop conuter, aids with sotrage of data in arrays</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Defining some attributes.</p>
+<p>The sole purpose of __init__ is to initialize values that will be
+needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>NDVI_files</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for NDVI raw files</p></li>
+<li><p><strong>VCI_files</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for VCI raw files</p></li>
+<li><p><strong>VCI3M_files</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for VCI3M raw files</p></li>
+<li><p><strong>shape_file_path</strong> (<em>str</em>) – Filepath to the shapefile that is to be used.</p></li>
+<li><p><strong>new</strong> (<em>bool</em>) – Whether or not a new time series is to be created or an old time
+series will have data appeneded.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some calculations occur in the definitions of the attributes. See
+source code</p>
+</div>
+<dl class="method">
+<dt id="AstroCast.Aggregate.aggregate_time_series.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">NDVI_files</em>, <em class="sig-param">VCI_files</em>, <em class="sig-param">VCI3M_files</em>, <em class="sig-param">shape_file_path</em>, <em class="sig-param">new</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defining some attributes.</p>
+<p>The sole purpose of __init__ is to initialize values that will be
+needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>NDVI_files</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for NDVI raw files</p></li>
+<li><p><strong>VCI_files</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for VCI raw files</p></li>
+<li><p><strong>VCI3M_files</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of filepaths for VCI3M raw files</p></li>
+<li><p><strong>shape_file_path</strong> (<em>str</em>) – Filepath to the shapefile that is to be used.</p></li>
+<li><p><strong>new</strong> (<em>bool</em>) – Whether or not a new time series is to be created or an old time
+series will have data appeneded.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some calculations occur in the definitions of the attributes. See
+source code</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Aggregate.aggregate_time_series.check_cloud_store">
+<code class="sig-name descname">check_cloud_store</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.check_cloud_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks for cloud cover</p>
+<p>In the previous processing, cloud cover had been taken out leaving the
+fill value. This function checks that when each shapefile has been
+aggregated that it still contains more than 1% of the original data.
+If it does not, then instead of the average being inserted into the
+time series, a NaN value is.</p>
+<p>This function does not return anyting but does update various
+attributes, see source code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Aggregate.aggregate_time_series.crop_to_shapefile">
+<code class="sig-name descname">crop_to_shapefile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.crop_to_shapefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use rasterio to crop the tif image to specified shape.</p>
+<p>The tif image is croped to shape using rasterio and then the null data
+is masked so that when averaged it is not included.</p>
+<p>This module does not return anything but does update various
+attributes, see source code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Aggregate.aggregate_time_series.get_features">
+<em class="property">static </em><code class="sig-name descname">get_features</code><span class="sig-paren">(</span><em class="sig-param">unformatted_features</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.get_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to grab features of shapes from shapefile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unformatted_features</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – Data about the size/edges of the shape in the shapefile</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Features and geomerty of shapefile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Aggregate.aggregate_time_series.open_files">
+<code class="sig-name descname">open_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.open_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use rasterio to open each of the NDVI,VCI and VCI3M tifs.</p>
+<p>This functions simply loops over each filepath in each list and opens
+all three(NDVI,VCI and VCI3M). The date is also extracted from the
+filepath and then the crop_to_shapefile function is called. Once all
+the files ahve been open,read,cropped and aggregated the save_to_hdf
+function is called.</p>
+<p>This functio ndoes not return anything but does update the raw_NDVI,raw
+_VCI,raw_VCI3M,date and date_counter attributes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Aggregate.aggregate_time_series.save_to_hdf">
+<code class="sig-name descname">save_to_hdf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Aggregate.aggregate_time_series.save_to_hdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function saves the time series to HDF format.</p>
+<p>If new is true then a new HDF file will be created and the data will
+be stored there. The name of the file will be the name of the shapefile
+that was used to aggregate the data. There are four columns that are
+saved, the date,NDVI, VCI and VCI3M. This is stored as a dataset in the
+HDF file for each shape in the shapefile.</p>
+<p>If new is false, the data is just appended into a previously created
+timeseries database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="CreatePDF.html" class="btn btn-neutral float-right" title="Reports Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="AstroCast Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrew Bowell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

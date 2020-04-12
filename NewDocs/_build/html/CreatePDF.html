@@ -1,0 +1,578 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reports Module &mdash; AstroCast RCMRD Pipeline 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Forecast Module" href="Forecast.html" />
+    <link rel="prev" title="Aggregation Module" href="Aggregate.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> AstroCast RCMRD Pipeline
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">AstroCast Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Aggregate.html">Aggregation Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Reports Module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Forecast.html">Forecast Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GaussianProcesses.html">Gaussian Processes Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_Normalisation.html">NDVI Normalisation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_to_VCI.html">NDVI to VCI Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VCI_To_VCI3M.html">VCI to VCI3M Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AstroCast RCMRD Pipeline</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">AstroCast Modules</a> &raquo;</li>
+        
+      <li>Reports Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/CreatePDF.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reports-module">
+<h1>Reports Module<a class="headerlink" href="#reports-module" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-AstroCast.CreatePDF"></span><p>This module creates the reports from the forecasts and saves as PDF</p>
+<p>The class in this module is rather large and does not contain any calcualtions
+,only the set up of the report. It has been made as clear as possible as this
+sort of thing in matplotlib is not ideal. If things are changed there can be a
+butterfly effect very easily.</p>
+<p>Created on Mon Nov 18 17:59:36 2019</p>
+<p>&#64;author: Andrew Bowell</p>
+<dl class="class">
+<dt id="AstroCast.CreatePDF.createPDF">
+<em class="property">class </em><code class="sig-prename descclassname">AstroCast.CreatePDF.</code><code class="sig-name descname">createPDF</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">dataset_no</em>, <em class="sig-param">dates</em>, <em class="sig-param">predicted_VCI3M</em>, <em class="sig-param">last_known_date</em>, <em class="sig-param">shapefile_path</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class housing the functions to set up the report</p>
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.dataset">
+<code class="sig-name descname">dataset</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of dataset being looked at. This will become title for report and
+graphs in report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.dataset_no">
+<code class="sig-name descname">dataset_no</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.dataset_no" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of the dataset. This is so it can be looked up by comparing
+to the index of the shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.dates">
+<code class="sig-name descname">dates</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dates of the known data and the forecast. Used for x-axis of plot and
+the table as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.VCI3M">
+<code class="sig-name descname">VCI3M</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.VCI3M" title="Permalink to this definition">¶</a></dt>
+<dd><p>Known VCI3M as well as the forecast VCI3M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.last_date">
+<code class="sig-name descname">last_date</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.last_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Last date of which data was collected. This allows us to seperate the
+forecast data from the known data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.errors">
+<code class="sig-name descname">errors</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Errors on the forecast at each week. Layout will change as these are
+just place holders at the moment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.ax1">
+<code class="sig-name descname">ax1</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.ax1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an axis instance from the module matplotlib. ax1 will be used
+to plot the colorbar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib Axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.ax2">
+<code class="sig-name descname">ax2</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.ax2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an axis instance from the module matplotlib. ax2 will be used
+to plot the shapefile/map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib Axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.ax3">
+<code class="sig-name descname">ax3</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.ax3" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This is an axis instance from the module matplotlib. ax3 will be used
+to display the trend. (Bit useless. Fig text will be used in future</p>
+</div></blockquote>
+<p>update)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib Axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.ax4">
+<code class="sig-name descname">ax4</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.ax4" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an axis instance from the module matplotlib. ax4 will be used
+to plot the graph of the VCI3M time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib Axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.ax5">
+<code class="sig-name descname">ax5</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.ax5" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an axis instance from the module matplotlib. ax5 will be used
+to plot the table of VCI3M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib Axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.figure">
+<code class="sig-name descname">figure</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.figure" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a matplotlib figure upon which axes can be placed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.cmap">
+<code class="sig-name descname">cmap</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.cmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>matplotlib colomap which can assign colours to different values or
+different ranegs of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib colourmap</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.norm">
+<code class="sig-name descname">norm</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the colormap to create the bounds. (min/max values)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Matplotlib colourmap bounds</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.CreatePDF.createPDF.shapefile_path">
+<code class="sig-name descname">shapefile_path</code><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.shapefile_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>file path to the shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Initiate the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>str</em>) – Name of dataset being looked at. This will become title for report
+and graphs in report.</p></li>
+<li><p><strong>dataset_no</strong> (<em>int</em>) – The number of the dataset. This is so it can be looked up by
+comparing to the index of the shapefile.</p></li>
+<li><p><strong>dates</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – Dates of the known data and the forecast. Used for x-axis of plot
+and the table as well.</p></li>
+<li><p><strong>predicted_VCI3M</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – Known VCI3M as well as the forecast VCI3M.</p></li>
+<li><p><strong>last_known_date</strong> (<em>str</em>) – Last date of which data was collected. This allows us to seperate
+the forecast data from the known data.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.VCI3M_graph">
+<code class="sig-name descname">VCI3M_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.VCI3M_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function handles the grpahing of the time series.</p>
+<p>The matplotlib fill between function allows a shaded region to be
+created where there is uncertainty. We know that the predicted VCI3M
+will just be the last 9 values so this is easy enough. The whole time
+series is then plotted as a solid black line and then a black, vertical
+dashed line is used to signify the last known date data was collected
+on. As currently, the data is quite noisey the VCI3M can dip below
+0. There is a small if statement that checks for this and then changes
+the limits on the plot so that all the data can be seen. The background
+is then shaded in using the colourmap created earlier.
+This is all plotted to ax4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">dataset_no</em>, <em class="sig-param">dates</em>, <em class="sig-param">predicted_VCI3M</em>, <em class="sig-param">last_known_date</em>, <em class="sig-param">shapefile_path</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>str</em>) – Name of dataset being looked at. This will become title for report
+and graphs in report.</p></li>
+<li><p><strong>dataset_no</strong> (<em>int</em>) – The number of the dataset. This is so it can be looked up by
+comparing to the index of the shapefile.</p></li>
+<li><p><strong>dates</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – Dates of the known data and the forecast. Used for x-axis of plot
+and the table as well.</p></li>
+<li><p><strong>predicted_VCI3M</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">NumPy</span> <span class="pre">array</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – Known VCI3M as well as the forecast VCI3M.</p></li>
+<li><p><strong>last_known_date</strong> (<em>str</em>) – Last date of which data was collected. This allows us to seperate
+the forecast data from the known data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.colour_bar">
+<code class="sig-name descname">colour_bar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.colour_bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates the colourbar</p>
+<p>The bounds of the colourbar are set along with the colours. The colour
+bar is then added onto ax1 as well as sorting out the tick frequency.
+The title of the colourbar is also set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.create_map">
+<code class="sig-name descname">create_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.create_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function plots the map of a shapefile using geopandas.</p>
+<p>Using geopandas the shapefile is read and a new column of VCI3M is
+added onto it. Everything is set to zero apart from the dataset we are
+creating the report for. The shapefile is then plotted based on it’s
+VCI3M. The set_trend function is then called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.save_show_fig">
+<code class="sig-name descname">save_show_fig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.save_show_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Small function that saves the figure.</p>
+<p>Save the figure with the name of the dataset and the data which the
+data was last measured on. Also show the figure,</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.set_trend">
+<code class="sig-name descname">set_trend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.set_trend" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function sets the trend for the VCI3M</p>
+<p>The trend will simply be up or down. It just checks if the VCI3M value
+in a few weeks will be larger than that in a couple of weeks. The text
+is then displayed to ax3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.set_up_figure">
+<code class="sig-name descname">set_up_figure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.set_up_figure" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates the figure and axes.</p>
+<p>Matplotlib’s gridspec function is used to assin different parts of the
+figure to different parts of the report. The axis is turned of for
+some of the axes like the map so there is not a square box around it.
+The title of the figure is also set as well as adding some text about
+where the forecasts can currently be found. The colour_bar and
+create_map functions are then called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.CreatePDF.createPDF.table">
+<code class="sig-name descname">table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.CreatePDF.createPDF.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Small function creating the table for the report.</p>
+<p>A table is created with the dates and corresponding VCI3M predicted
+values. The background is set to be the same colours as the cmap
+created earlier. This is also plotted to ax4 as tables need to be
+accompanied by graphs when using matplotlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Forecast.html" class="btn btn-neutral float-right" title="Forecast Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Aggregate.html" class="btn btn-neutral float-left" title="Aggregation Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrew Bowell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

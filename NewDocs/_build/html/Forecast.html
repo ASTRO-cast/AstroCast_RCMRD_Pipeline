@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Forecast Module &mdash; AstroCast RCMRD Pipeline 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gaussian Processes Module" href="GaussianProcesses.html" />
+    <link rel="prev" title="Reports Module" href="CreatePDF.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> AstroCast RCMRD Pipeline
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">AstroCast Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Aggregate.html">Aggregation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CreatePDF.html">Reports Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Forecast Module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GaussianProcesses.html">Gaussian Processes Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_Normalisation.html">NDVI Normalisation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="NDVI_to_VCI.html">NDVI to VCI Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="VCI_To_VCI3M.html">VCI to VCI3M Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AstroCast RCMRD Pipeline</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">AstroCast Modules</a> &raquo;</li>
+        
+      <li>Forecast Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Forecast.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="forecast-module">
+<h1>Forecast Module<a class="headerlink" href="#forecast-module" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-AstroCast.Forecast"></span><p>This module handles the preperation of the data before the GP.</p>
+<p>The entire purpose of this module is to prepare the data into the foremat
+needed for the GP to handle.</p>
+<p>Created on Mon Apr  6 17:59:53 2020</p>
+<p>&#64;author: Andrew Bowell</p>
+<dl class="class">
+<dt id="AstroCast.Forecast.forecast">
+<em class="property">class </em><code class="sig-prename descclassname">AstroCast.Forecast.</code><code class="sig-name descname">forecast</code><span class="sig-paren">(</span><em class="sig-param">database_path</em>, <em class="sig-param">shapefile_path</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Forecast.forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that houses the functions needed to convert the data</p>
+<dl class="attribute">
+<dt id="AstroCast.Forecast.forecast.databse">
+<code class="sig-name descname">databse</code><a class="headerlink" href="#AstroCast.Forecast.forecast.databse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the HDF5 file that contains all of time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Forecast.forecast.file">
+<code class="sig-name descname">file</code><a class="headerlink" href="#AstroCast.Forecast.forecast.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the contents of the HDF5 file. Each dataset must then be read
+from this.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>HDF5 datareader</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AstroCast.Forecast.forecast.shapfile_path">
+<code class="sig-name descname">shapfile_path</code><a class="headerlink" href="#AstroCast.Forecast.forecast.shapfile_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to the shapefile needed to create the reports</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Initiate the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database_path</strong> (<em>str</em>) – Path to the HDF5 file that contains all of time series.</p></li>
+<li><p><strong>shapfile_path</strong> (<em>str</em>) – The path to the shapefile needed to create the reports</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="AstroCast.Forecast.forecast.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">database_path</em>, <em class="sig-param">shapefile_path</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Forecast.forecast.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database_path</strong> (<em>str</em>) – Path to the HDF5 file that contains all of time series.</p></li>
+<li><p><strong>shapfile_path</strong> (<em>str</em>) – The path to the shapefile needed to create the reports</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Forecast.forecast.create_forecast">
+<code class="sig-name descname">create_forecast</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Forecast.forecast.create_forecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create the forecast</p>
+<p>This function grabs the dataset names from the HDF5 file and loops over
+them, opening each dataset, masking any NaN elements (NaNs cannot be
+passed into the GP function) and then masking the days that these
+NaN values occur on too. The dates are also converted into days since
+the first measurement (Julian calender).</p>
+<p>Once the forecast has been created the reports are created by calling
+a seperate module. (This module structure could change in the future)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Forecast.forecast.open_dataset">
+<code class="sig-name descname">open_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Forecast.forecast.open_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function opens the HDF5 dataset and closes it once done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AstroCast.Forecast.forecast.raw_to_datetime">
+<code class="sig-name descname">raw_to_datetime</code><span class="sig-paren">(</span><em class="sig-param">unformatted_date</em><span class="sig-paren">)</span><a class="headerlink" href="#AstroCast.Forecast.forecast.raw_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert raw string date to datetime</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unformatted_date</strong> (<em>str</em>) – Date in unformatted form of %Y%m%d</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Python datetime version of the unformatted date entered</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="GaussianProcesses.html" class="btn btn-neutral float-right" title="Gaussian Processes Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="CreatePDF.html" class="btn btn-neutral float-left" title="Reports Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrew Bowell
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
