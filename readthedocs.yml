@@ -13,4 +13,4 @@ sphinx:
 #  configuration: mkdocs.yml
 
 conda:
-  environment: environment.yml
+  environment: AstroCastRCMRD.yml
