@@ -1,3 +1,4 @@
+name: AstroCastRCMRD
 channels:
   - defaults
   - conda-forge
