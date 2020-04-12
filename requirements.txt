@@ -3,3 +3,5 @@ rasterio
 matplotlib
 geopandas
 numpy
+pyro-ppl
+h5py
