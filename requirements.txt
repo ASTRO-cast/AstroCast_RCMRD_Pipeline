@@ -1,5 +1,4 @@
-pytorch
-torchvision
+torch
 rasterio
 matplotlib
 geopandas
