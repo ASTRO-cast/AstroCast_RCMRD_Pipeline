@@ -1,0 +1,25 @@
+name: AstroCastTraining
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - jupyter
+  - cpuonly
+  - pytorch
+  - torchvision
+  - rasterio
+  - git
+  - matplotlib
+  - geopandas
+  - moviepy
+  - scikit-learn
+  - pip
+  - pip:
+     - pyModis
+     - julian
+
+  
+
+
+
