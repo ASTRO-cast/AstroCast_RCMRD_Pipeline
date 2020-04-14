@@ -180,4 +180,3 @@ class hindcast:
         self.create_hindcast()
         self.file.close()
             
-"
