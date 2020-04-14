@@ -86,8 +86,8 @@ class hindcast:
         
         self.data_halfway_point = int(data_length/2)
         
-        self.hindcast_results =  np.full((data_length-data_halfway_point+10,10)
-                                         ,0.0)
+        self.hindcast_results =  np.full((data_length-
+                                          self.data_halfway_point+10,10),0.0)
         
         
         for dataset_no,dataset in enumerate(dataset_names):
@@ -95,9 +95,9 @@ class hindcast:
             self.database_file = self.file[dataset]
                 
             for run_counter,hindcast_counter in \
-                enumerate(range(data_halfway_point,data_length)):
+                enumerate(range(self.data_halfway_point,data_length)):
       
-                dataset_array = np.array(database_file,
+                dataset_array = np.array(self.database_file,
                                          dtype=float)[:hindcast_counter]
               
                 dataset = dataset.replace("?","")
@@ -134,7 +134,7 @@ class hindcast:
 
                 print(hindcast_counter,'out of',data_length)     
                 
-                self.save_the_data()
+            self.save_the_data()
 
             
     def save_the_data(self):
@@ -161,7 +161,7 @@ class hindcast:
                                           '60 day lag time','70 day lag time',
                                           '80 day lag time','90 day lag time'] 
         
-        self.database_file[data_halfway_point:,4:] =self.hindcast_results
+        self.database_file[self.data_halfway_point:,4:] =self.hindcast_results
                                          
         print(self.database_file)
           
