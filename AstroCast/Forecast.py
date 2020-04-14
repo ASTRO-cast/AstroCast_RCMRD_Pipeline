@@ -13,9 +13,8 @@ import h5py as h5
 import numpy as np
 from datetime import datetime,timedelta
 
-
-#import CreatePDF
-#import GaussianProcesses
+import CreatePDF
+import GaussianProcesses
 
 
 class forecast:
@@ -92,11 +91,19 @@ class forecast:
         
         for dataset_no,dataset in enumerate(dataset_names):
         
-            dataset_array = np.array(self.file[dataset],dtype=float)
+            dataset_array = np.array(self.file[dataset],dtype=float)[:-10]
           
             dataset = dataset.replace("?","")
             
+
+            
+            zero_mask = np.isnan(dataset_array[:,0])
+            
+            
+            
             dates = raw_to_datetime_Vec(dataset_array[:,0])
+            
+            
         
             days = np.array([(date-dates[0]).days for date in dates])
             
@@ -116,9 +123,10 @@ class forecast:
             create_report = CreatePDF.createPDF(dataset,dataset_no,
                                                 predicted_dates,
                                                 predicted_VCI3M,dates[-1],
-                                                self.shapefile_path)    
+                                                self.shapefile_path,
+                                                self.database)    
 
-            create_report.set_up_figure()
+            create_report.error_calc()
             
     def open_dataset(self):
         """This function opens the HDF5 dataset and closes it once done.

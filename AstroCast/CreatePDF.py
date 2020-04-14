@@ -20,7 +20,7 @@ import matplotlib as mp
 from shapely.geometry import Point
 import matplotlib.gridspec as gridspec
 from datetime import timedelta
-
+import h5py as h5
 
 class createPDF:
     """Class housing the functions to set up the report
@@ -69,10 +69,12 @@ class createPDF:
         Uses the colormap to create the bounds. (min/max values)
     shapefile_path : str
         file path to the shapefile.
+    database : str
+        file path to the database file
     
     """ 
     def __init__(self,dataset,dataset_no,dates,predicted_VCI3M,last_known_date,
-                 shapefile_path):
+                 shapefile_path,database_path):
         """Initiate the attributes.
 
         Parameters
@@ -91,19 +93,54 @@ class createPDF:
         last_known_date : str
            Last date of which data was collected. This allows us to seperate 
            the forecast data from the known data.
-        
+        database_path : str
+            Databse name or file path so that errors can be read and calculated
+            
         """
         self.dataset = dataset
         self.dataset_no = dataset_no
         self.dates = dates
         self.VCI3M = predicted_VCI3M
         self.last_date = last_known_date
-        self.errors = [0,1,2,3,4,5,6,7,8,9]
+        self.errors = np.empty(10,dtype=float)
         self.ax1,self.ax2,self.ax3,self.ax4,self.ax5 = None,None,None,None,None
         self.figure = None
         self.cmap = None
         self.norm = None
         self.shapefile_path = shapefile_path
+        self.database = database_path
+        
+        
+        
+    def error_calc(self):
+        """This function uses the hindcast data to calcualte the errors
+        
+        This function opens the main database file and compares the hindcast
+        data for each lag time with the actual data. This is done by 
+        calculating the residuals (actual-forecasted) for each prediction time
+        step and then taking the standard deviation of the residuals. This is
+        then multiplied by two so that 99% of future predictions will fall
+        within our calculated uncertainty. 
+        
+
+        Returns
+        -------
+        None.
+
+        """
+        file = h5.File((self.database+'.h5'), 'r')
+        print(self.dataset)
+        dataset_array = np.array(file[self.dataset],dtype=float)
+        dataset_array[dataset_array==0] = np.nan
+        
+        self.errors[0] = 0
+        
+        for jump_ahead in range(1,10):
+            self.errors[jump_ahead] = np.nanstd(dataset_array[:,4]-
+                                           dataset_array[:,jump_ahead+4])
+            
+        file.close()
+        self.set_up_figure()
         
         
     def set_up_figure(self):

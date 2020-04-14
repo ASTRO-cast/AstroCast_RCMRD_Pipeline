@@ -31,9 +31,11 @@ def main():
     
     #~~~~~~~~~~~~~~~~~~~~~~~For user to define~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     
-    create_new_time_series = False
+    create_new_time_series = True
     
-    convert_NDVI_from_scratch = False
+    convert_NDVI_from_scratch = True
+    
+    calibrate_errors = True 
     
     shapefile_filepath = '..\\CountyShapes\\County.shp'
     
@@ -43,6 +45,8 @@ def main():
     VCI_filepath = '..\\..\\..\\Data\\Processed_Data2\\RCMRD_VCI\\'
     
     VCI3M_filepath = '..\\..\\..\\Data\\Processed_Data2\\RCMRD_VCI3M\\'
+    
+    Database_path = 'County'
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     
@@ -92,7 +96,7 @@ def main():
                                             shapefile_filepath,
                                             create_new_time_series)
             
-        create_time_series.open_files()
+        #create_time_series.open_files()
         
         database_name= shapefile_filepath.split('.shp')[0].split('\\')[-1]
         
