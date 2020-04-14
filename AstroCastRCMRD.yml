@@ -1,4 +1,4 @@
-name: AstroCastTraining
+name: AstroCastRCMRD
 channels:
   - defaults
   - conda-forge
