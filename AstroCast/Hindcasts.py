@@ -13,7 +13,7 @@ import h5py as h5
 import numpy as np
 from datetime import datetime,timedelta
 import matplotlib.pyplot as plt
-#import GaussianProcesses
+import GaussianProcesses
 
 
 class hindcast:
@@ -180,12 +180,4 @@ class hindcast:
         self.create_hindcast()
         self.file.close()
             
-        
-        
-database_path ='County'
-
-hindcast_data = hindcast(database_path)
-
-hindcast_data.open_dataset()
-
-hindcast_data.hindcast_results
+"
