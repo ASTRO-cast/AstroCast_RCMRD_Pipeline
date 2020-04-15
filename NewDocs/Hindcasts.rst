@@ -1,4 +1,4 @@
-VCI to VCI3M Module
+Hindcast Module
 ===================
 
 .. toctree::
