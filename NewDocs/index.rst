@@ -4,15 +4,17 @@
    contain the root `toctree` directive.
 
 Welcome to AstroCast-RCMRD Pipeline documentation!
-====================================================
+==================================================
 
-This documentation will help aid the use of the pipleine
-========================================================
+This documentation will help aid the use of Astrocast's VCI3M forcasting pipeline
+=================================================================================
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   
+   Introduction
    
    modules
 

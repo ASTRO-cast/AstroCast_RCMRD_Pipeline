@@ -8,3 +8,5 @@ Reports Module
 .. automodule:: AstroCast.CreatePDF
     :members:
 	
+   CreatePDFcode
+	
