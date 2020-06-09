@@ -9,7 +9,7 @@ Welcome to AstroCast-RCMRD Pipeline documentation!
 This documentation will help aid the use of Astrocast's VCI3M forcasting pipeline
 =================================================================================
 
-.. image:: rmcrd_logo.jpg
+.. image:: rcmrd_logo.jpg
   :width: 400
   :alt: Alternative text
 
