@@ -3,11 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to AstroCast-RCMRD Pipeline documentation!
-==================================================
-
-This documentation will help aid the use of Astrocast's VCI3M forcasting pipeline
-=================================================================================
+AstroCast-RCMRD Pipeline documentation
+======================================
 
 .. image:: rcmrd_logo.jpg
   :width: 400
@@ -25,6 +22,8 @@ This documentation will help aid the use of Astrocast's VCI3M forcasting pipelin
    Introduction
    
    modules
+   
+   Overview
 
 
 
