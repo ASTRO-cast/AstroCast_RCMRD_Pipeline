@@ -14,10 +14,11 @@ Created on Mon Nov 18 17:59:36 2019
 # Import the needed modules
 
 import geopandas as gpd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mp
-from shapely.geometry import Point
 import matplotlib.gridspec as gridspec
 from datetime import timedelta
 import h5py as h5
@@ -74,7 +75,7 @@ class createPDF:
     
     """ 
     def __init__(self,dataset,dataset_no,dates,predicted_VCI3M,last_known_date,
-                 shapefile_path,database_path):
+                 shapefile_path,database_path,column_name):
         """Initiate the attributes.
 
         Parameters
@@ -109,8 +110,16 @@ class createPDF:
         self.norm = None
         self.shapefile_path = shapefile_path
         self.database = database_path
+        self.column_name = column_name
         
         
+    
+    def forecast_store(self):
+        
+         file = h5.File(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'+self.database+'.h5'), 'r+')
+         database_file = file[self.dataset]
+         database_file[-10,4:] = self.VCI3M[-10:]
+         file.close()
         
     def error_calc(self):
         """This function uses the hindcast data to calcualte the errors
@@ -128,7 +137,7 @@ class createPDF:
         None.
 
         """
-        file = h5.File((self.database+'.h5'), 'r')
+        file = h5.File(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'+self.database+'.h5'), 'r+')
         print(self.dataset)
         dataset_array = np.array(file[self.dataset],dtype=float)
         dataset_array[dataset_array==0] = np.nan
@@ -136,10 +145,11 @@ class createPDF:
         self.errors[0] = 0
         
         for jump_ahead in range(1,10):
-            self.errors[jump_ahead] = np.nanstd(dataset_array[:,4]-
-                                           dataset_array[:,jump_ahead+4])
+            self.errors[jump_ahead] = np.nanstd(dataset_array[:-1,3]-
+                                           dataset_array[1:,jump_ahead+3])
             
         file.close()
+        
         self.set_up_figure()
         
         
@@ -158,7 +168,7 @@ class createPDF:
         None.
 
         """
-        
+        self.forecast_store()
         self.figure = plt.figure(figsize=(11.69*2,8.27*2))
         
         layout = gridspec.GridSpec(ncols=141, nrows=100, figure=self.figure)
@@ -190,10 +200,10 @@ class createPDF:
         img = plt.imread('AC_logo.png')
         self.ax5.imshow(img)
         
-        self.figure.text(0.577,0.26, ("Please find our weekly forecasts at the" 
-                               "link below \n \n"
-                               "       https://tinyurl.com/AstroCastForecasts")
-                               ,fontsize=18)
+        # self.figure.text(0.577,0.26, ("Please find our weekly forecasts (MCD43 at the" 
+        #                        "link below \n \n"
+        #                        "       https://tinyurl.com/AstroCastForecasts")
+        #                        ,fontsize=18)
         
         plt.subplots_adjust(left=0.15, bottom=0.005, right=0.93, top=0.95, 
                         wspace=0, hspace=0)
@@ -251,7 +261,8 @@ class createPDF:
 
         """
         
-        shapefile = gpd.read_file(self.shapefile_path).sort_values(['Name'])
+        shapefile = gpd.read_file(self.shapefile_path).sort_values(
+            [self.column_name])
 
         map_VCI3M = np.full(len(shapefile),0)
         
@@ -261,7 +272,8 @@ class createPDF:
         
         self.ax2 = shapefile.plot(ax=self.ax2,column ='VCI3M',cmap = self.cmap,
                                   norm=self.norm,legend= False,
-                                  edgecolor='Black',label= shapefile['Name'])
+                                  edgecolor='Black',
+                                  label= shapefile[self.column_name])
         
         self.set_trend()
 
@@ -389,8 +401,8 @@ class createPDF:
         None.
 
         """
-        plt.savefig('..\Forecasts\Forecast for '+str(self.dataset)+' dated' +
-                   str(self.dates[-9].date())+'.pdf',dpi = 400,
+        plt.savefig('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Forecasts\\Forecast for '+str(self.dataset)+' dated' +
+                   str(self.dates[-11].date())+'.pdf',dpi = 400,
                        facecolor=self.figure.get_facecolor())
        
         plt.show()

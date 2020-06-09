@@ -13,8 +13,8 @@ import h5py as h5
 import numpy as np
 from datetime import datetime,timedelta
 
-#import CreatePDF
-#import GaussianProcesses
+import CreatePDF
+import GaussianProcesses
 
 
 class forecast:
@@ -30,7 +30,7 @@ class forecast:
     shapfile_path : str
         The path to the shapefile needed to create the reports
     """
-    def __init__(self,database_path,shapefile_path):
+    def __init__(self,database_path,shapefile_path,name_of_shapefile_column):
         """Initiate the attributes.
         
         Parameters
@@ -39,11 +39,15 @@ class forecast:
             Path to the HDF5 file that contains all of time series.
         shapfile_path : str
             The path to the shapefile needed to create the reports
-            
+        name_of_shapefile_column : str
+            The column of the shapefile that will be used. E.g name of each 
+            county or the region ID. 
+    
         """
         self.database = database_path
         self.file =  None
         self.shapefile_path = shapefile_path
+        self.column_name = name_of_shapefile_column
     
     def raw_to_datetime(self,unformatted_date):
         """Convert raw string date to datetime
@@ -91,25 +95,26 @@ class forecast:
         
         for dataset_no,dataset in enumerate(dataset_names):
         
-            dataset_array = np.array(self.file[dataset],dtype=float)[:-10]
+            dataset_array = np.array(self.file[dataset],dtype=float)
+
           
-            dataset = dataset.replace("?","")
+            #dataset = dataset.replace("?","")
             
 
             
-            zero_mask = np.isnan(dataset_array[:,0])
+            zero_mask = np.isnan(dataset_array[:-10,0])
             
             
             
-            dates = raw_to_datetime_Vec(dataset_array[:,0])
+            dates = raw_to_datetime_Vec(dataset_array[:-10,0])
             
             
         
             days = np.array([(date-dates[0]).days for date in dates])
             
-            nan_mask = np.isnan(dataset_array[:,3])
+            nan_mask = np.isnan(dataset_array[:-10,3])
             
-            VCI = dataset_array[:,3][~nan_mask]
+            VCI = dataset_array[:-10,3][~nan_mask]
             
             days = days[~nan_mask]
             
@@ -124,7 +129,8 @@ class forecast:
                                                 predicted_dates,
                                                 predicted_VCI3M,dates[-1],
                                                 self.shapefile_path,
-                                                self.database)    
+                                                self.database,
+                                                self.column_name)    
 
             create_report.error_calc()
             
@@ -136,7 +142,7 @@ class forecast:
         None.
 
         """
-        self.file = h5.File((self.database+'.h5'), 'r')     
+        self.file = h5.File(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'+self.database+'.h5'), 'r+')     
         self.create_forecast()
         self.file.close()
             

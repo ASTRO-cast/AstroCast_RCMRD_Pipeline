@@ -13,7 +13,7 @@ import h5py as h5
 import numpy as np
 from datetime import datetime,timedelta
 import matplotlib.pyplot as plt
-#import GaussianProcesses
+import GaussianProcesses
 
 
 class hindcast:
@@ -93,7 +93,7 @@ class hindcast:
         for dataset_no,dataset in enumerate(dataset_names):
             
             self.database_file = self.file[dataset]
-                
+            print(dataset)
             for run_counter,hindcast_counter in \
                 enumerate(range(self.data_halfway_point,data_length)):
       
@@ -132,7 +132,9 @@ class hindcast:
                         predicted_VCI3M[-10+save_counter]
       
 
-                print(hindcast_counter,'out of',data_length)     
+                print(hindcast_counter,'out of',data_length)    
+                if hindcast_counter%40 ==0:
+                    np.save(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Output_check\\'+str(hindcast_counter)+ str(dataset)+' hindcast is done.npy'),np.arange(0,10))
                 
             self.save_the_data()
 
@@ -176,7 +178,9 @@ class hindcast:
         None.
 
         """
-        self.file = h5.File((self.database+'.h5'), 'a')     
+        self.file = h5.File(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'+str(self.database)+'.h5'), 'a')   
+        
         self.create_hindcast()
         self.file.close()
-            
+
+          

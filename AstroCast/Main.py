@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """This is the main body and will run through each pipeline step.
-
-
 Created on Sat Apr 11 14:19:35 2020
 @author: Andrew
 
@@ -11,222 +9,288 @@ from glob import glob
 import h5py as h5
 import numpy as np
 import sys
-
+import os
+import shutil
+import fix_size
+import whittaker_smoothing
 import NDVI_Normalisation
-import NDVI_to_VCI
-import VCI_To_VCI3M
 import Aggregate
 import Forecast
-
-
-def are_you_sure(create_new_time_series):
-    if create_new_time_series:
-        if input('Are you sure you want to create a new time series? Hit y ')\
-            != 'y':
-            are_you_sure(create_new_time_series)            
+import Hindcasts
 
 
 def main():
 
-    
-    #~~~~~~~~~~~~~~~~~~~~~~~For user to define~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-    
-    create_new_time_series = True
-    
-    convert_NDVI_from_scratch = True
-    
-    calibrate_errors = True 
-    
-    shapefile_filepath = '..\\CountyShapes\\County.shp'
-    
-    
-    NDVI_filepath = '..\\..\\..\\Data\\Raw_Data\\'
-    
-    VCI_filepath = '..\\..\\..\\Data\\Processed_Data2\\RCMRD_VCI\\'
-    
-    VCI3M_filepath = '..\\..\\..\\Data\\Processed_Data2\\RCMRD_VCI3M\\'
-    
-    Database_path = 'County'
-    
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    # The two varibles below contol the program. On the first run setting both
+    # to TRUE edits the size of the NDVI files so they match, runs the smoothing,
+    # finds the min/max values for each pixel and then aggregates into a database
+    # and forecasts. THIS CREATES A NEW DATABASE.
     
-    # Make sure user wants a new time series. This can take a long time. and y
+    # Setting create_new_time_series to TRUE and convert from scratch to FALSE
+    # avoids any smoothing, changing of file size and min/max finding. It simply
+    # acesses the smoothed data and then aggregates into a NEW DATABASE
     
-    # it will also overwrite any previous data.
+    # Setting both variables to FALSE means the program looks for new NDVI data
+    # to smooth, if there is any, smooths it then aggregates and APPENDS it onto 
+    # a current database. This means the database file needs to have been created
+    # previously.
     
-    are_you_sure(create_new_time_series)
-
-    shapefile_name = shapefile_filepath.split('.shp')[0].split('\\')[-1]
+    #C:\\Rangeland\\image_data\\Andrew
+    # Adding a loop so that the automation of several shapefiles can be done
+    
+    shape_files = ['C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\KenyaShape\\ken_admbnda_adm0_iebc_20191031.shp',
+                   'C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\CountyShapes\\County.shp']
+    
+    shape_file_columns = ['ADM0_EN','Name']
+    
+    create_new_time_series_list = [True,True]
+    
+    convert_NDVI_from_scratch_list = [True,False]
     
     
-    if create_new_time_series and convert_NDVI_from_scratch:
+    for shape,column,new_time_series,from_scratch in zip(shape_files,shape_file_columns,create_new_time_series_list,convert_NDVI_from_scratch_list):
+    
+        create_new_time_series = new_time_series
         
-        NDVI_file_list = glob(NDVI_filepath+'\*.tif')
+        convert_NDVI_from_scratch = from_scratch
         
-        unformatted_dates = [int(file.split('dekadal.')[1].split('.tif')
-                                     [0]) for file in NDVI_file_list]
+    
         
-
+        # Below is a description of some of the filepathing. I will include all the
+        # folders needed in the zip I send over.
+        # This is the path to the shapefile. I have included two here to default to.
+        # One is the enitrety of Kenya and the other is counties. The shapefile name
+        # dictates what the database name will be.
+    
+    
+    
+        shapefile_filepath = shape
+    
         
-        # Find min/max for every pixel
+        # This is the path to the raw NDVI data
         
-        Nomalise_NDVI = NDVI_Normalisation.NDVI_normalisation(NDVI_file_list)
-        # Nomalise_NDVI.normalise()
+        NDVI_filepath = 'C:\\Rangeland\\image_data\\Andrew\\RCMRD Data'
+    
+        # This is a path to where the smoothed data will be stored.
+        smoothed_NDVI_filepath = 'C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\smoothed_NDVI'
         
-        # Use the min/max for each pixel to convert to pixel VCI
+        # Path to the database. This is currently hardcoded in some places but I 
+        # hope to update this in the future to make it more robust.
         
-        NDVI_VCI = NDVI_to_VCI.convert_NDVI_to_VCI(NDVI_file_list,
-                                                  unformatted_dates)
+        Database_path = 'C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'
         
-        # NDVI_VCI.read_and_store_data()
+    
         
-        VCI_file_list= glob(VCI_filepath+'\*.tif')
+        # This is the name of the shapefile column that is to be used. Ideally needs
+        # to be unique but also describe the region. I have two here that correspond
+        # to the shapefiles above. 
         
-        VCI_VCI3M = VCI_To_VCI3M.convert_VCI_to_VCI3M(VCI_file_list)
+        name_of_shapefile_column = column
         
-        # VCI_VCI3M.populate_average_list()
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
         
-        VCI3M_file_list = glob(VCI3M_filepath+'\*.tif')
-        
-        
-        create_time_series = \
-            Aggregate.aggregate_time_series(NDVI_file_list,
-                                            VCI_file_list,
-                                            VCI3M_file_list,
-                                            shapefile_filepath,
-                                            create_new_time_series)
-            
-        #create_time_series.open_files()
-        
-        database_name= shapefile_filepath.split('.shp')[0].split('\\')[-1]
-        
-        
-        
-        create_the_forecasts = Forecast.forecast(database_name,
-                                                 shapefile_filepath)
-        
-        create_the_forecasts.open_dataset()
-        
-        
-    elif create_new_time_series is True and convert_NDVI_from_scratch is False:
-        
-        NDVI_file_list = glob(NDVI_filepath+'\*.tif')
-        VCI_file_list= glob(VCI_filepath+'\*.tif')       
-        VCI3M_file_list = glob(VCI3M_filepath+'\*.tif')
-
-        create_time_series = \
-            Aggregate.aggregate_time_series(NDVI_file_list,
-                                            VCI_file_list,
-                                            VCI3M_file_list,
-                                            shapefile_filepath,
-                                            create_new_time_series)
-        
-        create_time_series.open_files()
-        
-        database_name= shapefile_filepath.split('.shp')[0].split('\\')[-1]
-
-        
-        
-
-        
-        
-        create_the_forecasts = Forecast.forecast(database_name,
-                                                 shapefile_filepath)
-        
-        create_the_forecasts.open_dataset()
-        
-        
-    else:    
-        
+        # This is the first stage of the program occuring beofre any of the options
+        # have been picked. It gets the name of the shapefile and looks for any 
+        # smoothed/unsmoothed NDVI. It also checks to see if any file sizes need to 
+        # be changed slighty to make sure they line up
+    
+    
+    
         shapefile_name = shapefile_filepath.split('.shp')[0].split('\\')[-1]
-        main_database = h5.File((shapefile_name+'.h5'),'r') 
-        database_keys = list(main_database.keys())
-        last_known_processed_date = main_database[database_keys[0]][:,0][-1]
-        main_database.close()
+    
+        unsmoothed_NDVI = sorted(glob(NDVI_filepath+'\\*.tif'))
+        
+        smoothed_NDVI = sorted(glob(smoothed_NDVI_filepath+'\\*.tif'))
+    
+    
+        fix_size.change_file_size(unsmoothed_NDVI,NDVI_filepath)
         
         
-        # Find all filepaths to tif NDVI data and use list comprehension to 
-        # extract date from each
+        if create_new_time_series and convert_NDVI_from_scratch:
+            
+            # This is the first option described above. This is what needs to be run 
+            # for the first time. 
+            
+            
+            unformatted_dates = [int(file.split('dekadal.')[1].split('.tif')
+                                          [0]) for file in unsmoothed_NDVI]
+            
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            # Smooth each pixel
+            whittaker_smoothing.run_smoothing(unsmoothed_NDVI,False,0)
+       
         
-        NDVI_file_list = glob(NDVI_filepath+'\*.tif')
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            # Activate min/max normalisation class
+            Nomalise_NDVI = NDVI_Normalisation.NDVI_normalisation(smoothed_NDVI)
+    
+            # Run the min/max finding algorithm
+            Nomalise_NDVI.normalise()
         
-        
-        new_unformatted_dates = [int(file.split('dekadal.')[1].split('.tif')
-                                     [0]) for file in NDVI_file_list]
-        
-        
-        # Check if the data is newer than previous data, create mask and only use new data
-        
-        new_data_mask = new_unformatted_dates > last_known_processed_date
-        
-        new_dates = np.array(new_unformatted_dates)[new_data_mask].tolist()
-        
-        new_NDVI_files = np.array(NDVI_file_list)[new_data_mask].tolist()
-        
-        
-        # If there is no new data the system will exit
-        if len(new_NDVI_files) == 0:
-            user_input =input('No new files, would you like to create'
-                               'a forecast still? If so press y')
-             
-            if user_input == 'y':
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            #Activate class to create time series
+            create_time_series = \
+                Aggregate.aggregate_time_series(smoothed_NDVI,
+                                                shapefile_filepath,
+                                                create_new_time_series,
+                                                
+                                                name_of_shapefile_column)
+            # Run time series creation algorithm
+            create_time_series.open_files()
+    
+            
+            # Use the databse (HDF5 file) to create hindcasts
+            database_name= shapefile_filepath.split('.shp')[0].split('\\')[-1]
+    
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            # Activate class
+            create_hindcasts = Hindcasts.hindcast(database_name)
+            #Create Hindcasts
+            create_hindcasts.open_dataset()
+    
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            # Create forecasts
+            create_the_forecasts = Forecast.forecast(database_name,
+                                                      shapefile_filepath,
+                                                      name_of_shapefile_column)
+            create_the_forecasts.open_dataset()
+    
+            
+        elif create_new_time_series is True and convert_NDVI_from_scratch is False:
+            
+            # This is the second option for the pipeline. It creates new databases
+            # from the smoothed NDVI and then forecasts this new database.
+            
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            #Activate class to create time series
+            create_time_series = \
+                Aggregate.aggregate_time_series(smoothed_NDVI,
+                                                shapefile_filepath,
+                                                create_new_time_series,
+                                                name_of_shapefile_column)
                 
-                database_name= (shapefile_filepath.split('.shp')[0]
-                                .split('\\')[-1])
+            # Run time series creation algorithm
+            create_time_series.open_files()
+    
+            
+            # Grab name of shapefile as this is will be the name of the database.
+            database_name= shapefile_filepath.split('.shp')[0].split('\\')[-1]
+    
+            
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            # Activate class
+            create_hindcasts = Hindcasts.hindcast(database_name)
+            #Create Hindcasts
+            create_hindcasts.open_dataset()
+    
+            
+            #Create forecasts
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            create_the_forecasts = Forecast.forecast(database_name,
+                                                      shapefile_filepath,
+                                                      name_of_shapefile_column)
+            
+            create_the_forecasts.open_dataset()
+        else:    
+            # This is the last option. It appends on new data to a database (again,
+            # dictated by what the shapefile is called.)
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            
+            # The code below is used to open a database, check what the last saved
+            # date was. This then allows us to grab the 'new' NDVI files.
+            
+            shapefile_name = shapefile_filepath.split('.shp')[0].split('\\')[-1]
+            main_database = h5.File((Database_path+shapefile_name+'.h5'),'r') 
+            database_keys = list(main_database.keys())
+            last_known_processed_date = main_database[database_keys[0]][:-10,0][-1]
+            main_database.close()
+            
+            new_unformatted_dates = [int(file.split('dekadal.')[1].split('.tif')
+                                          [0]) for file in unsmoothed_NDVI]
+            
+            new_data_mask = new_unformatted_dates > last_known_processed_date
+            
+            new_dates = np.array(new_unformatted_dates)[new_data_mask].tolist()
+            
+            new_NDVI_files = np.array(unsmoothed_NDVI)[new_data_mask].tolist()
+            
+            database_name= shapefile_filepath.split('.shp')[0].split('\\')[-1]
+            
+            smoothed_NDVI = sorted(glob(smoothed_NDVI_filepath+'\\*.tif'))
+            
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+             
+            # Now we know what the new files are we can check if there actually are
+            # any. If there isn't any, just create some forecasts based on the 
+            # current data. If there are some, the next if statement checks to see
+            # if that data has already been smoothed or not. If it has move on to
+            # the aggregation phase, if it hasn't smooth the new data. when smoothing
+            # the new data the LAST YEAR of data before the new data is also used.
+            
+            if len(new_NDVI_files) != 0:
+                
+                if len(smoothed_NDVI) < len(unsmoothed_NDVI):
+    
+            
+                    for_smoothing = (unsmoothed_NDVI[-36-len(new_NDVI_files):
+                                                     -len(new_NDVI_files)] +
+                                     new_NDVI_files)
+                                     
+                    
+                    
+                    
+                    whittaker_smoothing.run_smoothing(for_smoothing,True,
+                                                      len(new_NDVI_files))
         
+        
+                # This follows the same process as above. It simply gets the newly
+                # smoothed data.
+                smoothed_NDVI = sorted(glob(smoothed_NDVI_filepath+'\\*.tif'))
+                
+                new_unformatted_dates = [int(file.split('Smoothed')[1].split('.tif')
+                                              [0]) for file in smoothed_NDVI]
+                
+                new_data_mask = new_unformatted_dates > last_known_processed_date
+                
+                new_dates = np.array(new_unformatted_dates)[new_data_mask].tolist()
+                
+                new_smoothed_NDVI = np.array(smoothed_NDVI)[new_data_mask].tolist()
+                
+                
+                create_time_series = \
+                    Aggregate.aggregate_time_series(new_smoothed_NDVI,
+                                                    shapefile_filepath,
+                                                    create_new_time_series,
+                                                    name_of_shapefile_column)
+                    
+                    
+                  
+                create_time_series.open_files()
+         
+            
                 create_the_forecasts = Forecast.forecast(database_name,
-                                                 shapefile_filepath)
-        
+                                                          shapefile_filepath,
+                                                          name_of_shapefile_column)
+                
                 create_the_forecasts.open_dataset()
                 
             else:
                 
-                sys.exit('There are no new files, the program will now exit')
-        
-        
-        NDVI_VCI = NDVI_to_VCI.convert_NDVI_to_VCI(new_NDVI_files, new_dates)
-        
-        NDVI_VCI.read_and_store_data()
-        
-        VCI_file_list= glob(VCI_filepath+'\*.tif')    
-        
-        VCI_data_mask = new_data_mask.copy()
-
-        new_data_count = np.count_nonzero(new_data_mask)
-        
-        # This is the line that adds the extra 8 data points before the most recent
-        VCI_data_mask[-new_data_count-8:-new_data_count] = [True] * (
-            len(VCI_data_mask[-new_data_count-8:-new_data_count]))
-        
-        
-        new_VCI_files = np.array(VCI_file_list)[VCI_data_mask].tolist()
-        
-        
-        VCI_VCI3M = VCI_To_VCI3M.convert_VCI_to_VCI3M(new_VCI_files)
-
-        VCI_VCI3M.populate_average_list()
-        
-        VCI3M_file_list = glob(VCI3M_filepath+'\*.tif')
-        
-        
-        
-        create_time_series = \
-            Aggregate.aggregate_time_series(NDVI_file_list,
-                                            VCI_file_list,
-                                            VCI3M_file_list,
-                                            shapefile_filepath,
-                                            create_new_time_series)
-            
-        create_time_series.open_files()
-        
-        create_the_forecasts = Forecast.forecast(database_name,
-                                                 shapefile_name)
-        
-        create_the_forecasts.open_dataset()
-        
+                create_the_forecasts = Forecast.forecast(database_name,
+                                                          shapefile_filepath,
+                                                          name_of_shapefile_column)
+                
+                create_the_forecasts.open_dataset()
+       
+       # Throughout the process some files are stored in output check so that you 
+       # can see where the program has progressed to without using a console etc.
+       
+        shutil.rmtree('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Output_check')
     
+        os.mkdir('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Output_check')
     
-
     
     
 if __name__ == "__main__":

@@ -79,7 +79,7 @@ class aggregate_time_series:
         Simple loop conuter, aids with sotrage of data in arrays
     
     """
-    def __init__(self,NDVI_files,VCI_files,VCI3M_files,shape_file_path,new):
+    def __init__(self,NDVI_files,shape_file_path,new,name_of_shapefile_column):
         """Defining some attributes.
         
         The sole purpose of __init__ is to initialize values that will be
@@ -89,15 +89,14 @@ class aggregate_time_series:
         ----------
         NDVI_files : :obj:`List` of :obj:`str` 
             List of filepaths for NDVI raw files
-        VCI_files : :obj:`List` of :obj:`str` 
-            List of filepaths for VCI raw files
-        VCI3M_files : :obj:`List` of :obj:`str` 
-            List of filepaths for VCI3M raw files
         shape_file_path : str
             Filepath to the shapefile that is to be used.
         new : bool
             Whether or not a new time series is to be created or an old time
             series will have data appeneded.
+        name_of_shapefile_column : str
+            The column of the shapefile that will be used. E.g name of each 
+            county or the region ID. 
         
         Note
         ---- 
@@ -106,19 +105,18 @@ class aggregate_time_series:
     
         """
         self.NDVI_files = NDVI_files
-        self.VCI_files = VCI_files
-        self.VCI3M_files = VCI3M_files
         self.shapefile_path = shape_file_path
         self.new = new
         
         
         self.shapefile_data = gpd.read_file(shape_file_path).to_crs(
-                              crs=rasterio.open(self.VCI3M_files[0]).crs.data)
+                              crs=rasterio.open(self.NDVI_files[0]).crs.data)
         
         self.datasets = [slash.replace('/', '-') for slash in
-                         self.shapefile_data['Name'].tolist()]
+                         self.shapefile_data[str(name_of_shapefile_column)].
+                         tolist()]
         
-        self.final_array = np.empty((len(self.datasets),len(self.VCI3M_files),
+        self.final_array = np.empty((len(self.datasets),len(self.NDVI_files),
                                      4),dtype='float')
         
         
@@ -134,6 +132,7 @@ class aggregate_time_series:
         self.date = None
         self.date_counter = None
         self.shape_counter = None
+        
         
 
         
@@ -172,20 +171,41 @@ class aggregate_time_series:
         -------
         None.
         """
-        for self.date_counter,(NDVI_file,VCI_file,VCI3M_file) in \
-                enumerate(zip(self.NDVI_files,self.VCI_files,self.VCI3M_files)):
+        
+        max_files = sorted(glob('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Min_Max_Pixels\\Max_*.tif'))
+        
+        min_files = sorted(glob('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Min_Max_Pixels\\Min_*.tif'))
+        
+        self.possible_dekadals = np.array(['0101', '0111', '0121', '0201', '0211', '0221', 
+                             '0301', '0311', '0321', '0401', '0411', '0421',
+                             '0501', '0511', '0521', '0601', '0611', '0621', 
+                             '0701', '0711', '0721', '0801', '0811', '0821', 
+                             '0901', '0911', '0921', '1001', '1011', '1021', 
+                             '1101', '1111', '1121', '1201', '1211', '1221'])
+        
+        self.maxes = np.empty(36,dtype=object)
+        self.mins = np.empty(36,dtype=object)
+        
+        
+        for counter,(max_file,min_file) in enumerate(zip(max_files,min_files)):
+            self.maxes[counter] = rasterio.open(max_file)
+            self.mins[counter]  = rasterio.open(min_file)
             
         
+        
+        for self.date_counter,NDVI_file in enumerate(self.NDVI_files):
+            
+            self.date = NDVI_file.split('\\')[-1].split('.tif')[0]
+            
             self.raw_NDVI   =  rasterio.open(NDVI_file)
-            self.raw_VCI    =  rasterio.open(VCI_file)
-            self.raw_VCI3M  =  rasterio.open(VCI3M_file)
-
-            self.date = VCI3M_file.split('RCMRD_VCI3M\\')[1].split('.tif')[0]
             
             self.crop_to_shapefile()
             
-            
+            if self.date_counter%20 ==0:
+                np.save(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Output_check\\'+self.date+' is done.npy'),np.arange(0,10))
             print(self.date,' is complete')
+        
+        self.create_VCI3M()
             
         self.save_to_hdf()   
 
@@ -210,23 +230,39 @@ class aggregate_time_series:
                                         shapefile_data.index==shape_counter])
             
             NDVI,  to_ignore = mask(self.raw_NDVI,  crop_boundaries, crop=True)
-            VCI,   to_ignore = mask(self.raw_VCI,   crop_boundaries, crop=True)
-            VCI3M, to_ignore = mask(self.raw_VCI3M, crop_boundaries, crop=True)
             
+            # self.final_NDVI = np.ma.array(np.where(NDVI <= 0.01, np.nan, NDVI)
+            #                         ,dtype='float32')
+            # If still not working also check for values greater than 1.
+            
+            
+            loc = int(np.where(self.possible_dekadals==str(self.date[12:]))[0])
+            
+            Max, to_ignore = mask(self.maxes[loc],
+                                             crop_boundaries, crop = True)
+                                             
+            Min, to_ignore = mask(self.mins[loc],
+                                             crop_boundaries, crop = True)                        
             
             self.NDVI   = np.ma.masked_array(NDVI)
-            self.VCI    = np.ma.masked_array(VCI)
-            self.VCI3M  = np.ma.masked_array(VCI3M)
+        
+            masked_mins = np.ma.masked_array(Min)
             
+            masked_Max = np.ma.masked_array(Max)
+            
+            
+            
+            self.raw_VCI    = 100*(self.NDVI-masked_mins)/(masked_Max-masked_mins)
             
             self.final_NDVI   = np.ma.masked_values(NDVI,1.175494351e-38)
-            self.final_VCI    = np.ma.masked_values(VCI,1.175494351e-38)
-            self.final_VCI3M  = np.ma.masked_values(VCI3M,1.175494351e-38)
+            self.final_VCI    = np.ma.masked_values(self.raw_VCI,1.175494351e-38)
             
             self.shape_counter = shape_counter
 
             self.check_cloud_store()
         
+
+
 
     def check_cloud_store(self):
         """This function checks for cloud cover
@@ -251,16 +287,14 @@ class aggregate_time_series:
             
             self.final_NDVI  = np.nan
             
-        if self.final_VCI.count()   <  self.VCI.count()/100:
+        if self.final_VCI.count()   <   self.raw_VCI.count()/100:
             
             self.final_VCI   = np.nan
-            
-        if self.final_VCI3M.count() <  self.VCI3M.count()/100:
-            
-            self.final_VCI3M = np.nan
 
 
-        self.final_array[self.shape_counter,self.date_counter,0] = self.date
+
+        self.final_array[self.shape_counter,self.date_counter,0] = \
+            int(self.date[8:])
         
         self.final_array[self.shape_counter,self.date_counter,1] = \
             np.nanmean(self.final_NDVI)
@@ -268,10 +302,41 @@ class aggregate_time_series:
         self.final_array[self.shape_counter,self.date_counter,2] = \
             np.nanmean(self.final_VCI)
             
-        self.final_array[self.shape_counter,self.date_counter,3] = \
-            np.nanmean(self.final_VCI3M)
-            
+      
         
+      
+    def create_VCI3M(self):
+        
+        if self.new:
+                
+            for shape_counter in range(0,len(self.final_array)):
+                average_list = []
+                
+                for date_counter in range(0,9):
+    
+                    average_list.append(self.final_array[shape_counter,
+                                                         date_counter,2])
+                                
+                    self.final_array[shape_counter,date_counter,3] = \
+                        np.nanmean(np.array(average_list))
+                
+                
+                for date_counter in range(9,len(self.final_array[0])):
+                
+                    average_list.pop(0)
+                
+                    average_list.insert(-1,self.final_array[shape_counter,
+                                            date_counter,2])
+                
+                    self.final_array[shape_counter,date_counter,3] = \
+                        np.nanmean(np.array(average_list))
+                
+                print(self.final_array[0,:,3])
+        else:
+                self.final_array[:,:,3] = \
+                    np.full(np.shape(self.final_array[:,:,3]),0)
+
+            
     def save_to_hdf(self):
         """This function saves the time series to HDF format.
             
@@ -295,7 +360,7 @@ class aggregate_time_series:
             
             file_name = self.shapefile_path.split('.shp')[0].split('\\')[-1]
             
-            storage_file = h5.File((str(file_name)+'.h5'), 'w')
+            storage_file = h5.File(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'+str(file_name)+'.h5'), 'w')
             
             for dataset_counter,dataset in enumerate(self.datasets):
                 
@@ -304,9 +369,9 @@ class aggregate_time_series:
                                             compression='lzf',
                                             maxshape=(None,None))      
                              
-                storage_file[dataset].attrs['Column_Names'] = ['Date',
+                storage_file[dataset].attrs['Column_Names'] = np.string_(['Date',
                                                               'NDVI','VCI',
-                                                              'VCI3M'] 
+                                                              'VCI3M'])
                 
                 
                                              
@@ -316,23 +381,56 @@ class aggregate_time_series:
         
             
         else:
-        
+            
+            
             file_name = self.shapefile_path.split('.shp')[0].split('\\')[-1]
             
-            storage_file = h5.File((str(file_name)+'.h5'), 'a')
+            storage_file = h5.File(('C:\\Rangeland\\image_data\\Andrew\\RCMRD Pipeline\\Data\\Databases\\'+str(file_name)+'.h5'), 'a')
+
             
             for dataset_counter,dataset in enumerate(self.datasets):
                 
                 
-                dataset = storage_file[dataset]
+                data = storage_file[dataset]
                 
-                dataset_length = len(dataset)
+                dataset_length = len(data)
             
-                dataset.resize(dataset_length+len(self.final_array[0,:,0]),
+                data.resize(dataset_length+len(self.final_array[0,:,0]),
                                axis=0)
-                dataset[dataset_length:,:] =self.final_array[dataset_counter,
+                
+                data[dataset_length-10:-10,:4] =self.final_array[dataset_counter,
                                                              :,:]
-                                             
+                
+                            
+            for dataset_counter,dataset in enumerate(self.datasets):
+                
+                VCI = storage_file[dataset][:-10,2].copy()
+                
+                VCI3M = np.empty(np.shape(VCI))
+            
+                average_list = []
+                
+                
+                for date_counter in range(0,9):
+    
+                    average_list.append(VCI[date_counter])
+                                
+                    VCI3M[date_counter] = \
+                        np.nanmean(np.array(average_list))
+                
+                
+                for date_counter in range(9,len(VCI)):
+                
+                    average_list.pop(0)
+                
+                    average_list.insert(-1,VCI[date_counter])
+                
+                    VCI3M[date_counter] = \
+                        np.nanmean(np.array(average_list))
+            
+                             
+                storage_file[dataset][:-10,3] = VCI3M
+                
             storage_file.close()
                 
             print('The new data has been added to the database successfully')
