@@ -46,13 +46,13 @@ Improvements that can be made
 As this is a very quick process that is performed millions of times, python may not be the best language for the job (as it is interpreted). I have created the same algorithm in C++ and linked it into the Python front end and it does show 
 the potential for a speed-up in the ballpark of 5-10 times.
 
-Finding the Min/Max of each pixel
----------------------------------
+Step 3: Finding the Min/Max of each pixel
+-----------------------------------------
 
 To convert NDVI to VCI it is required that the minimum and maximum NDVI values are found, for each pixel at each time-step. This is a fairly simple step that just compares the same dekadal from each of the different years and find the minimum and maximum pixel. Currently, this is running 
 on the baseline of 2003-2018 but it is very possible this will change in the future. 
 
-Aggregation
+Step 4: Aggregation
 -----------
 
 Once the NDVI has been produced, the aggregation of the NDVI can occur.  A shapefile is used to crop the NDVI TIFF alongside the Min and Max TIFFs for the respective dekadal. The VCI is then calculated each pixel using the standard formula and the min/max of each pixel. 
@@ -60,22 +60,22 @@ Any null values (clouded values) are masked out and then the amount of null valu
 
 The date, average NDVI and average VCI for each shape in the shapefile is saved for each timestep into an HDF ‘database’ with the same name as the original shapefile. Later, hindcast data is also stored into this file.
 
-Hindcasts
----------
+Step 5: Hindcasts
+-----------------
 
 Each shape in the shapefile then has hindcasts performed. The first half of the time-series is used for training the gaussian processes code with the second half being used to verify the accuracy of the forecasts. The forecast values are stored alongside the actual values from the same date. This is so that the residuals, r-squared score etc can then be calculated and updated each time the program is run. 
 Whenever a forecast is performed the new forecasts are stored in the hindcast columns of the HDF ‘database’.
 
 
 
-Forecasting
------------
+Step 6: Forecasting
+-------------------
 
 Forecasts are then performed using the most recent data for each shape in the shapefile. This is done using the Gaussian processes (GP) code developed by the AstroCast team. Any null values are masked out and the GP code will interpolate and forecast 
 90 days into the future (9 dekadals). These forecasts are then saved alongside the hindcasts.
 
-Report creation 
----------------
+Step 7: Report creation 
+-----------------------
 
 Reports are then constructed using the forecasted data. They consist of a simple map of Kenya using colour to indicate the VCI level in 30 day’s time for the different regions (as designated from the shapefile) and a time-series including the forecast and the past half a year of VCI data. The residuals and standard deviation of the residuals (from the stored hindcast data)
 is then calculated and displayed on the graph. These reports are then saved as pdfs. 

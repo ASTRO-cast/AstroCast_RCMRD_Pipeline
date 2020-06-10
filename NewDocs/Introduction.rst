@@ -11,4 +11,7 @@ To view and clone the GIT repo please follow this link `<https://github.com/AnBo
 
 This pipleline was created to implemented a VCI forecasting system developed by the AstroCast team.
 
-The paper can be found here: `<https://www.researchgate.net/publication/337531884_Forecasting_vegetation_condition_for_drought_early_warning_systems_in_pastoral_communities_in_Kenya>`_
+The paper can be found here_.
+
+
+.. _here: https://www.researchgate.net/publication/337531884_Forecasting_vegetation_condition_for_drought_early_warning_systems_in_pastoral_communities_in_Kenya
