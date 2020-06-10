@@ -53,7 +53,7 @@ To convert NDVI to VCI it is required that the minimum and maximum NDVI values a
 on the baseline of 2003-2018 but it is very possible this will change in the future. 
 
 Step 4: Aggregation
------------
+-------------------
 
 Once the NDVI has been produced, the aggregation of the NDVI can occur.  A shapefile is used to crop the NDVI TIFF alongside the Min and Max TIFFs for the respective dekadal. The VCI is then calculated each pixel using the standard formula and the min/max of each pixel. 
 Any null values (clouded values) are masked out and then the amount of null values is compared to the amount of valid values. If less than 1% of the shape contains valid data, then the value is just said to be null and later interpolated by the gaussian processes. 
