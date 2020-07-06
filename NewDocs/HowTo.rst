@@ -83,12 +83,19 @@ The databases are saved in the hdf5 format using the h5py python module.
 Within an hdf file there are several ‘datasets’ that can be accessed through the h5py module in a dictionary style.
  You can access these datasets which then contain the date, NDVI, VCI 10D and the VCI3M. They also (once hindcasts have been performed) contain the hindcast data.
 The data can be accessed with the h5py module like so:
+
 .. code-block:: python
+
 	Import h5py as h5
+	
 	X = h5.File(‘County.h5’,’r’)
+	
 	key_list = list(x.keys())
+	
 	data_array = x[key_list[0]][:]
-	Data array is a 2-D array, essentially a spreadsheet. In the first column are the dates and are accessed like so:
+	
+	#Data array is a 2-D array, essentially a spreadsheet. In the first column are the dates and are accessed like so:
+	
 	Dates = data_array[:,0]
 	
 In the second column is the corresponding NDVI values, third is the VCI10D and fourth is the VCI3M. There are then 10 extra columns which contain information about the hindcasts. Each column represents a lag time for the hindcasts, e.g. 10 day lag time, 20 day lag time and so on. This has been done so that different metrics can be used to assess how well the pipeline’s forecasts are doing. 
